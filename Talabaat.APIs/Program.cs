@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 using Talabaat.APIs.Errors;
 using Talabaat.APIs.Helpers;
 using Talabaat.APIs.Middleware;
@@ -28,10 +29,16 @@ namespace Talabaat.APIs
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddSingleton<IConnectionMultiplexer>((serverprovider)=>
+            {
+                var Connection = builder.Configuration.GetConnectionString("Redis");
+                return ConnectionMultiplexer.Connect(Connection); 
+            });
             //builder.Services.AddScoped<IGenericReository<Product>, IGenericReository<Product>>();
             //builder.Services.AddScoped<IGenericReository<ProductBrand>, IGenericReository<ProductBrand>>();
             //builder.Services.AddScoped<IGenericReository<ProductCatogry>, IGenericReository<ProductCatogry>>();
             builder.Services.AddScoped (typeof(IGenericReository<>),typeof(GenaricReposatry<>) );
+            builder.Services.AddScoped(typeof(IBasketRepository), typeof(BasketReposatry));
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
             builder.Services.Configure<ApiBehaviorOptions>(
                 options =>

@@ -25,16 +25,9 @@ namespace Talabaat.APIs.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            // var products=await _productRepo.GetAllAsync();
             var Spec = new ProductAndBrindAndCatogrySpecifications();
-             var products=await _productRepo.GetAllWithSpectAsync(Spec);
-            var result=_mapper.Map<IEnumerable<Product>,IEnumerable<ProductToReturnDto>>(products);
-
-            // JsonResult result=new JsonResult(products);
-            //OkObjectResult result=new OkObjectResult(products);
-            // result.ContentTypes=new Microsoft.AspNetCore.Mvc.Formatters.MediaTypeCollection();
-            // result.StatusCode = 200;
-
+            var products = await _productRepo.GetAllWithSpectAsync(Spec);
+            var result = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductToReturnDto>>(products);
             return Ok(result);
 
 
